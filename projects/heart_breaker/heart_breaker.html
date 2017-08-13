@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title> Heart breaker </title>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js" ></script>
+	<script>
+	//onload init canvas
+	$(function(){		
+		init();
+		lostBall();
+		initAudio();
+		initTimer();
+		initPaddle();
+		initMouse();
+		initBricks();
+		$(document).keydown(onKeyDown);
+		$(document).keyup(onKeyUp);
+		$(document).mousemove(onMouseMove);
+		document.addEventListener("touchmove", function(e)
+		{
+			e.preventDefault();
+			var touch = e.touches[0];
+			if (touch.pageX > canvasMinX && (touch.pageX + paddle_w) < canvasMaxX) 
+			{
+				if(paddle_x + paddle_w < WIDTH)
+				{
+					paddle_x = touch.pageX - canvasMinX;
+				}
+				else
+				{
+					paddle_x = paddle_x - paddle_w;
+				}
+			}
+		}, false);
+	});
+
+var interval_id;	
+
+var x = 150;
+var y = 150;
+var dx = 2;
+var dy = 6;
+var ballr = 12;
+var lost_ball = true;
+var ball_count = 10;
+
+
+var WIDTH = 400;
+var HEIGHT = 400;
+var paddle_x;
+var paddle_w;
+var paddle_h;
+var paddle_y;
+var ctx;
+var right_key = false;
+var left_key = false;
+var paddle_dx = 5;
+var canvasMinX;
+var canvasMaxX;
+
+var bricks;
+var brick_colors;
+var NROWS;
+var NCOLS;
+var BRICKWIDTH;
+var BRICKHEIGHT;
+var PADDING;
+
+var particles = new Array(10);
+var maxCollisions = 10;
+var maxParticles = 10;
+var collision_count=0;
+
+var millisec = 0;
+var seconds = 0;
+var time_display = '';
+var game_over = false;
+
+var previous_col;
+var previous_row;
+
+var music_play = false;
+var audio;
+function init() {
+
+  ctx = $('#canvas')[0].getContext("2d");
+  $("#canvas").width(WIDTH);
+  $("#canvas").height(HEIGHT);
+}
+
+function initAudio()
+{
+	var track_arr = new Array();
+	track_arr[0] = "1.mp3";
+	track_arr[1] = "2.mp3";
+	track_arr[2] = "3.mp3";
+	track_arr[3] = "4.mp3";
+
+	
+	var track_index = Math.floor((Math.random()*4));
+	audio = new Audio();
+	audio.id = "audio_player";
+	audio.volume = 0.2;
+	audio.src = track_arr[track_index];
+	if( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ) 
+	{
+		//audio.controls = "controls";
+		audio.addEventListener('canplaythrough',function(){
+        track.removeEventListener('canplaythrough');
+        audioLoaded = true;
+    },false);       
+		muisc_play = false;
+	}
+	document.getElementById("player").appendChild(audio);
+}
+
+function initTimer()
+{
+	time_display = '';
+	millisec = 0;
+	seconds = 0;
+	game_over = false;
+	startTimer();
+}
+
+function startTimer()
+{
+	interval_id = setInterval(draw, 10);
+}
+
+function stopTimer()
+{
+	clearInterval(interval_id);
+}
+
+function displayTimer()
+{
+	if(!game_over)
+	{
+		if(millisec >= 99)
+		{
+			millisec = 0;
+			seconds++;
+		}
+		else
+		{
+			millisec++;
+		}
+		time_display = seconds + "." + millisec + " seconds";
+	}
+}
+
+function displayBallCounter()
+{
+	if(ball_count > 0)
+	{
+		ball_display = "x" + ball_count;
+	}
+	else
+	{
+		ball_display = "x" + 0;
+	}
+	ctx.font = "10px arial";
+	ctx.fillText(ball_display, 380,20);
+}
+
+function initBall()
+{
+	x = 200;
+	y = 300;
+	dx = 1;
+	dy = 4;
+	ballr = 5;
+	lost_ball = false;
+}
+
+function initPaddle(){
+	paddle_h = 6;
+	paddle_w = 90;
+	paddle_x = WIDTH/2 - paddle_w/2;
+	paddle_y = HEIGHT - (2 * paddle_h);
+}
+
+
+function initBricks() {
+  NROWS = 11;
+  NCOLS = 22;
+  BRICKWIDTH = 18;
+  BRICKHEIGHT = 18;
+  PADDING = 1;
+
+  bricks = new Array(NROWS);
+  bricks[0] =  [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
+  bricks[1] =  [0,0,0,0,0,0,0,2,2,0,0,0,0,2,2,0,0,0,0,0,0,0];
+  bricks[2] =  [0,0,0,0,0,0,2,2,2,2,0,0,2,2,2,2,0,0,0,0,0,0];
+  bricks[3] =  [0,0,0,0,0,2,2,2,2,2,2,2,2,2,2,2,2,0,0,0,0,0];
+  bricks[4] =  [0,0,0,0,0,2,2,2,2,2,2,2,2,2,2,2,2,0,0,0,0,0];
+  bricks[5] =  [0,0,0,0,0,2,2,2,2,2,2,2,2,2,2,2,2,0,0,0,0,0];
+  bricks[6] =  [0,0,0,0,0,0,2,2,2,2,2,2,2,2,2,2,0,0,0,0,0,0];
+  bricks[7] =  [0,0,0,0,0,0,0,2,2,2,2,2,2,2,2,0,0,0,0,0,0,0];
+  bricks[8] =  [0,0,0,0,0,0,0,0,2,2,2,2,2,2,0,0,0,0,0,0,0,0];
+  bricks[9] =  [0,0,0,0,0,0,0,0,0,2,2,2,2,0,0,0,0,0,0,0,0,0];
+  bricks[10] = [0,0,0,0,0,0,0,0,0,0,2,2,0,0,0,0,0,0,0,0,0,0];
+  brick_colors = new Array(3);
+  brick_colors[2] = "#DF0101"
+  brick_colors[1] = "#F6CECE";
+}
+
+function initMouse() {
+  canvasMinX = ($(document).innerWidth()/2) - WIDTH/2;
+  canvasMaxX = canvasMinX + WIDTH;
+  $("#canvas").click(function()
+  {
+  	if(!music_play)
+	{
+		audio.play();
+	}
+	if (lost_ball)
+		{
+			if(!game_over)
+			{			
+				initBall();
+				initPaddle();
+			}
+		}
+  });
+}
+
+function particle(x,y,m,r,color)
+{
+	this.x = x || 0;
+	this.y = y || 0;
+	
+	this.radius = r;
+	this.color = color;
+	this.vx = -1.5 + Math.random()*3;
+	this.vy = m * Math.random()*1.5;
+}
+
+function drawParticles()
+{
+	for(var i=0; i < maxParticles; i++)
+	{
+		if(particles != undefined && particles[i] != undefined)
+		{
+			for(j=0; j < particles.length; j++)
+			{	
+				circle(particles[i][j].x,particles[i][j].y,particles[i][j].radius, particles[i][j].color);
+				particles[i][j].x = particles[i][j].x + particles[i][j].vx;
+				particles[i][j].y = particles[i][j].y + particles[i][j].vy;
+				particles[i][j].radius = Math.max(particles[i][j].radius - 0.05, 0.0); ;
+			}
+		}
+	}
+}
+
+function createParticles(direction, particle_index, radius, color)
+{
+	if(radius == undefined)
+	{
+		radius = 3;
+	}
+	if(color == undefined)
+	{
+		color = "#DF0101";
+	}
+	if(direction > 0)
+	{
+		direction = -1;
+	}
+	else
+	{
+		direction = 1;
+	}
+	particles[particle_index] = new Array(10);
+	for(i=0; i < maxParticles; i++)
+	{
+		particles[particle_index][i] = new particle(x,y, direction, radius, color);
+	}
+
+}
+
+
+function circle(x,y,r, color_code) {
+  ctx.beginPath();
+  if(r > 0)
+  {
+	ctx.arc(x, y, r, 0, Math.PI*2, true);
+	if(color_code !== undefined)
+	{
+		ctx.fillStyle = color_code;
+	}
+	else
+	{
+		ctx.fillStyle = "#000000";
+	}
+  }
+  ctx.closePath();
+  ctx.fill();
+}
+
+function drawBall()
+{
+	circle(x, y, ballr, "#696969");
+}
+
+function rect(x,y,w,h,color_code) {
+	if(color_code !== undefined)
+	{
+		ctx.fillStyle = color_code;
+	}
+	else
+	{
+		ctx.fillStyle = "#000000";
+	}
+
+  ctx.beginPath();
+  ctx.rect(x,y,w,h);
+  ctx.closePath();
+  ctx.fill();
+}
+
+function clear() {
+  ctx.clearRect(0, 0, WIDTH, HEIGHT);
+}
+	
+	function init_mouse() 
+	{
+		canvasMinX = $("#canvas").offset().left;
+		canvasMaxX = canvasMinX + WIDTH;
+	}
+
+	function onMouseMove(evt) 
+	{
+		if (evt.pageX > canvasMinX && (evt.pageX + paddle_w) < canvasMaxX) 
+		{
+			if(paddle_x + paddle_w < WIDTH)
+			{
+				paddle_x = evt.pageX - canvasMinX;
+			}
+			else
+			{
+				paddle_x = paddle_x - paddle_w;
+			}
+		}
+	}
+	
+	//game loop
+	function draw() 
+	{
+		//refresh screen
+		clear();
+		//update timer
+		displayTimer();
+		
+		//update ball counter
+		displayBallCounter();
+		
+		//move paddle
+		if(right_key && (paddle_x + paddle_w < WIDTH))
+		{
+			paddle_x += paddle_dx;
+		}
+		else if (left_key && paddle_x > 0)
+		{
+			paddle_x -= paddle_dx;
+		}
+		
+		
+		//draw bricks
+		for (i=0; i < NROWS; i++) 
+		{
+			for (j=0; j < NCOLS; j++) 
+			{
+				if (bricks[i][j] > 0) 
+				{
+					status = bricks[i][j];
+					rect((j * (BRICKWIDTH + PADDING)) + PADDING, 
+					(i * (BRICKHEIGHT + PADDING)) + PADDING,
+					BRICKWIDTH, BRICKHEIGHT, brick_colors[status]);
+				}
+			}
+		}
+		
+		//brick collision
+		rowheight = BRICKHEIGHT + PADDING;
+		colwidth = BRICKWIDTH + PADDING;
+		row = Math.floor(y/rowheight);
+		col = Math.floor(x/colwidth);
+				
+		//if so, reverse the ball and mark the brick as broken
+		if (y < NROWS * rowheight && row >= 0 && col >= 0 && bricks[row][col] > 0) 
+		{
+			if(previous_col == col)
+			{
+				dy = -dy;
+			}
+			else
+			{
+				dx = -dx;
+			}
+			
+			bricks[row][col]--;
+			
+			//draw particle if brick has been hit twice and disappears
+			if(bricks[row][col] == 0)
+			{
+				if(collision_count > maxCollisions-1)
+				{
+					collision_count = 0;
+				}
+				createParticles(dy, collision_count);
+				collision_count++;
+			}
+		}
+		//draw particles
+		drawParticles();
+		
+		
+		//draw ball
+		drawBall();
+		
+		//draw paddle
+		rect(paddle_x, paddle_y, paddle_w, paddle_h);
+		
+		//check for ball boundaries and bounce in opposite direction if boundary is reached
+		if(x + dx + ballr >= WIDTH)
+		{
+			x = WIDTH - dx - ballr;
+			dx = -dx;
+		}
+		else if(x + dx - ballr <= 0 )
+		{	
+			x = dx + ballr;
+			dx = -dx;
+		}
+		
+		if(y + dy + ballr <= 0 )
+		{
+			dy = -dy;
+		}
+		else if (y + dy + ballr >= HEIGHT - paddle_h)
+		{
+			//bounce up only if ball is between the paddles
+			if(x > paddle_x && x < paddle_x + paddle_w)
+			{
+				dx = 8 * ((x-(paddle_x+paddle_w/2))/paddle_w);
+				dy = -dy;
+			}
+		}
+		
+		x += dx;
+		y += dy;
+		
+		if(y-ballr > HEIGHT)
+		{
+			lostBall();
+		}
+		
+		//for predicting whether collision is from side or top 
+		if(previous_col != col)
+		{
+			previous_col = col;
+		}
+		
+		if(previous_row != row)
+		{
+			previous_row = row;
+		}
+		
+		gameOverCheck();
+	}
+	
+	function gameOverCheck()
+	{
+		if(!game_over)
+		{
+			var brick_remaining = 0;
+			for(i=0; i < NROWS ; i++)
+			{
+				for(j=0; j < NCOLS; j++)
+				{
+					if(bricks[i][j] > 0)
+					{
+						brick_remaining++;
+					}
+				}
+			}
+		
+			if(brick_remaining == 0 && y > 320)
+			{
+				for(var j=0; j < maxParticles; j++)
+				{
+					dy = -dy;
+					createParticles(dy, j, 4, "#696969");
+				}
+				game_over = true;
+				ballr = 0;
+				x=0;
+				y=0;
+				dx = 0;
+				dy = 0;
+			}
+		}
+		
+		if (ball_count < 0)
+		{
+			game_over = true;
+			ctx.font = "10px arial";
+			ctx.fillText("Not a heart breaker", 165, 300);	
+		}
+		else if(game_over && ball_count >= 0)
+		{
+		
+			ctx.font = "10px arial";
+			ctx.fillText("You are a heart breaker", 150, 300);
+			ctx.font = "10px arial";
+			ctx.fillText(time_display, 165, 330);
+		}
+		else if (lost_ball && ball_count >=0)
+		{
+			ctx.font = "10px arial";
+			ctx.fillText("Click to START. Hit space to reset.", 130, 300);
+			ctx.fillText("<== and => to move the paddle.", 120, 320);
+			ctx.font = "18px monospace";
+		}
+		
+		
+	
+	}
+	
+	function onKeyDown(evt)
+	{
+		var key_code = evt.keyCode;
+		if(key_code == 39)
+		{
+			right_key = true;
+			left_key = false;
+		}
+		else if (key_code == 37)
+		{
+			right_key = false;
+			left_key = true;
+		}
+		else if (key_code == 32 && lost_ball)
+		{
+		  	if(!music_play)
+			{
+				audio.play();
+			}
+			if(!game_over)
+			{			
+				initBall();
+				initPaddle();
+			}
+		}
+		else
+		{
+			right_key = false;
+			left_key = false;
+		}
+	}
+	
+	function onKeyUp(evt)
+	{
+		if(evt)
+		{
+			right_key = false;
+			left_key = false;
+		}
+	}
+	
+	function lostBall()
+	{
+		lost_ball = true;
+		ball_count--;
+		ballr = 0;
+		x=0;
+		y=0;
+		dx = 0;
+		dy = 0;
+	}
+	</script>
+	<style>
+		#canvas_wrapper {width: 600px; height: 400px; margin: 0 auto;}
+		audio{width:600px; margin-top: 300px;}
+	</style>
+</head>
+
+	
+
+
+
+
+<body>
+<div id="canvas_wrapper">
+	<canvas id="canvas" style="display: block; margin: 0 auto; border:2px solid #000000;" width="400" height="400"></canvas>
+	<div id="player"></div>
+</div>
+
+</body>
+</html>

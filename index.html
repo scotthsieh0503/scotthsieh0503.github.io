@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html ng-app="MySite">
+    <head>
+      <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+      <title>My name is Scott</title>
+      <!-- Loading JS libraries -->
+      <script src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
+      <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+      <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.14/angular.min.js"></script>
+      <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular-route.js"></script>
+      <script src="js/app.js"></script>
+      <!-- Load CSS libraries -->
+      <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css" rel="stylesheet">
+      <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" >
+      <link rel="stylesheet" type="text/css" href="css/mystyle.css">
+      <!-- Load Google Fonts -->
+      <link href='http://fonts.googleapis.com/css?family=Lobster+Two' rel='stylesheet' type='text/css'>         
+    </head>
+    
+    <body ng-controller='NavigationController as nav'>
+        <nav class="navbar navbar-default navbar-fixed-top">
+            <div class="container container-fluid">
+                <!-- Brand and toggle get grouped for better mobile display -->
+                <div class="navbar-header">
+                  <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                  <span class="sr-only">Toggle navigation</span>
+                  <span class="icon-bar"></span>
+                  <span class="icon-bar"></span>
+                  <span class="icon-bar"></span>
+                  </button>
+                  <a class="navbar-brand" href="#/">
+                   <span class="navbar-brand-title"><img src="asset/wigflip-ds.png"/>My name is Scott</span></a>
+                 </div>
+                <!-- Collect the nav links, forms, and other content for toggling -->
+                <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                    <ul class="nav navbar-nav navbar-right">
+                      <li ng-class="{ active:nav.isPage('/') }"><a href="#/">Home</a></li>
+                      <li ng-class="{ active:nav.isPage('/about') }"><a href="#/about">About</a></li>
+                      <li ng-class="{ active:nav.isPage('/projects') }"><a href="#/projects">Projects</a></li>
+                    </ul>
+                </div>
+            </div>               
+        </nav>
+        
+        <div class="main-content-view" ng-view></div>
+        
+        <footer id="page-footer">
+            <a class="social facebook" title="facebook" target="_blank" href="https://www.facebook.com/scott.hsieh.5"><i class="fa fa-facebook"></i></a>
+            <a class="social linkedin" title="linkedin" target="_blank" href="https://ca.linkedin.com/pub/scott-hsieh/4b/1a4/a23"><i class="fa fa-linkedin"></i></a>
+            <a class="social github" title="github" target="_blank" href="https://github.com/scotthsieh0503"><i class="fa fa-github"></i></a>
+            <a class="social deviantart" title="deviant art" target="_blank" href="http://aznweirdo.deviantart.com/gallery/"><i class="fa fa-deviantart"></i></a>
+        </footer>
+    </body>
+</html>

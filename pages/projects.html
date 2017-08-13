@@ -1,0 +1,29 @@
+
+<div class="padded-content-view">
+    <div class="project-summary-view" ng-repeat="project in projects" ng-click="projectCtrl.viewProject(project)">
+        <div class="project-thumbnail-container">
+            <img ng-if="project.icon" class="project-thumbnail" ng-src="{{project.icon}}">
+            <div ng-if="!project.icon" class="project-thumbnail initial ng-class: expression" ng-init="initial = projectCtrl.initial(project)">{{initial}}</div>  
+        </div>
+        <div class="project-info">
+            <h4>{{project.name}}</h4>
+            <p>{{project.description}}</p>
+            <span class="tags badge" ng-repeat="technology in project.technologies">{{"#"+technology}}</span>
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="project-view-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="project-label"></h4>
+      </div>
+      <div class="modal-body">
+        
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,233 @@
+/**
+ * Main template styling 
+ */
+
+html{ background-color: #F8F8F8}
+
+body
+{
+    padding-top: 70px;
+    background-color: #F8F8F8;
+}
+
+h4
+{
+    text-transform: uppercase;
+    color: #555;
+    font-size: 1.5em;
+}
+
+.navbar-default
+{
+    background-color: #F85133;
+    border-bottom: none;
+    font-family: 'Lobster Two', cursive;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.navbar-default .navbar-brand .navbar-brand-title{
+    position: relative;
+    color: #FFF;
+    font-size: 25px;
+    padding-left: 35px;
+}
+
+.navbar-default .navbar-brand img{
+    position: absolute;
+    top: -8px;
+    left: 0px;
+    width: 33px;
+    height: 33px;
+    display: inline-block;
+}
+
+.navbar-default .navbar-nav > li > a {
+    color: #FFF;
+}
+
+.navbar-default .navbar-toggle .icon-bar {
+    background-color: #EFEFEF;
+}
+
+
+div.main-content-view
+{
+    background-color: #F8F8F8;
+    min-height: 400px;
+    padding-bottom: 40px;
+}
+
+div.padded-content-view
+{
+    margin-left: auto;
+    margin-right: auto;
+    width: 80%;
+    text-align: center;
+}
+
+#page-footer
+{
+    padding: 15px;
+    text-align: center;
+    border-top: 2px solid #EFEFEF;
+}
+
+a.social
+{
+    display: inline-block;
+    line-height: 40px;
+    vertical-align: middle;
+    text-align: center;
+    width: 40px;
+    height: 40px;
+    font-size: 1.5em;
+    color: #fff;
+    border-radius: 20px;
+    margin: 3px;
+}
+
+a.social.facebook
+{
+   background-color: #3b5998; 
+}
+
+a.social.linkedin
+{
+    background-color: #0077B5;
+}
+
+a.social.deviantart
+{
+    background-color: #05cc47;
+}
+
+a.social.github
+{
+    background-color: #000;
+}
+/**
+ *  Project View styling 
+ */
+
+div.project-summary-view
+{
+    width: 280px;
+    height: 410px;
+    background-color: #FFF;
+    padding-top: 10px;
+    padding-left: 15px;
+    padding-right: 15px;
+    padding-bottom: 10px;
+    margin-left: auto;
+    margin-right: auto;
+    box-shadow: 0px 0px 10px #DFDFDF;
+    display: inline-block;
+    transition-timing-function: ease-in-out;
+    transition-duration: 0.1s;
+    vertical-align:middle;
+}
+
+div.project-summary-view:hover
+{
+    cursor: pointer;
+    transform: scale(1.05) ;
+    box-shadow: 0px 0px 15px #BBB;
+    z-index: 10;
+}
+
+div.project-thumbnail-container
+{
+    height: 220px;
+    width: 100%;
+    background-color: #33CCCC;
+}
+
+.project-thumbnail
+{
+    width: 100%;
+    height: 100%;
+}
+
+.project-thumbnail.initial
+{
+    line-height: 220px;
+    vertical-align: middle;
+    text-align: center;
+    text-transform: uppercase;
+    color: #fff;
+    font-size: 40px;
+}
+
+div.project-info
+{
+    font-size: 0.8em;
+    padding: 5px 10px;
+    height: 170px;
+    width: 100%;
+    color: #868686;
+    border-top: 1px solid #EFEFEF;
+}
+
+div.project-info span.tags
+{
+    font-weight: normal;
+    margin: 3px;
+}
+
+.modal-header
+{
+    border: none;
+}
+
+.modal-content
+{
+    border-radius: 0px;
+}
+
+.modal.fade .modal-dialog {
+    -webkit-transform: scale(0.1);
+    -moz-transform: scale(0.1);
+    -ms-transform: scale(0.1);
+    transform: scale(0.1);
+    top: 300px;
+    opacity: 0;
+    -webkit-transition: all 0.3s;
+    -moz-transition: all 0.3s;
+    transition: all 0.3s;
+}
+
+.modal.fade.in .modal-dialog {
+    -webkit-transform: scale(1);
+    -moz-transform: scale(1);
+    -ms-transform: scale(1);
+    transform: scale(1);
+    -webkit-transform: translate3d(0, -300px, 0);
+    transform: translate3d(0, -300px, 0);
+    opacity: 1;
+}
+
+.carousel-inner
+{
+    background-color: black;
+}
+
+.carousel-inner > .item > img {
+    margin: 0 auto;
+}
+
+/***
+ * About page styling 
+ */
+#contact-page-container{
+
+}
+
+
+
+@media (max-width: 650px)
+{
+
+}
+
+}
