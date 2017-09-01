@@ -83,16 +83,18 @@
           return initial;
       };
     });
-  
-  app.controller('AboutController', function($scope){  
+
+  app.controller('AboutController', function($scope){
     });
-  
+
   
 
   app.config(function($routeProvider) {
   $routeProvider
    .when('/', {
-    templateUrl: 'pages/home.html',    
+       templateUrl: 'pages/projects.html',
+       controller: 'ProjectsController',
+       controllerAs: 'projectCtrl'
     })
    .when('/projects', {
     templateUrl: 'pages/projects.html',
@@ -108,10 +110,20 @@
   });
   
   var projects = [
+      {
+          'name':'one45 mobile',
+          'date': new Date(2016, 11, 1,0, 0, 0, 0),
+          'description': 'mobile app for learners and faculty members to complete and distribute assessments',
+          'icon' : 'projects/one45_mobile/thumbnail.png',
+          'type': 'gallery',
+          'images': ['projects/one45_mobile/3.jpg', 'projects/one45_mobile/4.jpg','projects/one45_mobile/5.jpg' ],
+          'url' : null,
+          'technologies' : ['ionic framework','cordova','AngularJS', 'gulp', 'ES6', 'OAuth2', 'js sdk']
+      },
     {
       'name':'Maxeme Auto',
-      'date': new Date(2014, 11, 1,0, 0, 0, 0),
-      'description': 'Enteripise grade web application for inventory tracking, appointment scheduling, invoicing and accoutning for auto mechanic shops.',
+      'date': new Date(2015, 11, 1,0, 0, 0, 0),
+      'description': 'Custom CRM for inventory tracking, appointment scheduling, invoicing and accounting for auto mechanic shops.',
       'icon' : 'projects/maxeme_auto/thumbnail.png',
       'type': 'gallery',
       'images': ['projects/maxeme_auto/2.png','projects/maxeme_auto/4.png','projects/maxeme_auto/5.png', 'projects/maxeme_auto/6.png'],
@@ -120,7 +132,7 @@
     },
     {
       'name':'Heart Breaker',
-      'date': new Date(2013, 7, 15,0, 0, 0, 0),
+      'date': new Date(2014, 7, 15,0, 0, 0, 0),
       'description': 'Quick game of breakout to test if you are a heart breaker.',
       'type': 'web',
       'url': 'projects/heart_breaker/heart_breaker.html',
